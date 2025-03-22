@@ -1,18 +1,20 @@
-import { assertAbsolutePaths } from './assert-absolute-paths.js';
+import { isAbsolutePathOrThrow } from './is-absolute-path-or-throw.js';
 
-describe('assertAbsolutePaths ', () => {
+describe('isAbsolutePathOrThrow ', () => {
   it('should assert absolute paths', () => {
-    assertAbsolutePaths([
+    [
       '\\some',
       '/some',
       'C:/some',
       'C:\\some\\other',
       'C:\\some\\other\\file.tx',
-    ]);
+    ].forEach(isAbsolutePathOrThrow);
   });
   it('should assert absolute paths and throw errors', () => {
     expect(() =>
-      assertAbsolutePaths(['some', '\\some\\other', '\\some\\other\\file.tx'])
+      ['some', '\\some\\other', '\\some\\other\\file.tx'].forEach(
+        isAbsolutePathOrThrow
+      )
     ).toThrowError();
   });
 });

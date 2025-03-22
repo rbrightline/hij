@@ -1,8 +1,6 @@
 import { debug as __debug } from 'debug';
 import { resolve } from 'path';
 
-const debug = __debug('fs.scopeResolver');
-
 /**
  * Creates a scoped path resolver function that ensures resolved paths are within a specified directory.
  *
@@ -25,12 +23,15 @@ export function scopeResolver(filepath: string) {
 
   return (...pathSegments: string[]) => {
     const absolutePath = resolve(...pathSegments);
-    if (!absolutePath.startsWith(scopedir))
-      throw new Error(
-        `Path "${absolutePath}" must be inside the scope "${scopedir}"`
-      );
+    if (!absolutePath.startsWith(scopedir)) {
+      const errorMessage = `
+      The path is out of the defined scope!
+        Scope -> ${scopedir}
+        Path  -> ${absolutePath}
+        `;
+      throw new Error(errorMessage);
+    }
 
-    debug('resolved path by scope resolver: ', absolutePath);
     return absolutePath;
   };
 }

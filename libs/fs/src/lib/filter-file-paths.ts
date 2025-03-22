@@ -1,8 +1,6 @@
-import { assertAbsolutePaths } from './assert/assert-absolute-paths.js';
 import { debug as __debug } from 'debug';
 import { forEachFile } from './for-each-file.js';
-
-const debug = __debug('fs.filterFilePaths');
+import { isAbsolutePathOrThrow } from './assert/is-absolute-path-or-throw.js';
 
 /**
  * Filter out the directory paths from the given `absolute` paths.
@@ -11,18 +9,13 @@ const debug = __debug('fs.filterFilePaths');
  * @throws If any path in `filePaths` is not absolute
  */
 export async function filterFilePaths(filePaths: string[]): Promise<string[]> {
-  debug('filePaths: ', filePaths);
-  assertAbsolutePaths(filePaths);
+  filePaths.forEach(isAbsolutePathOrThrow);
 
   const filesOnly = await forEachFile(filePaths, (filepath, fileStat) => {
     return fileStat.isFile() ? filepath : undefined;
   });
 
-  debug('filesOnly: ', filePaths);
-
   const result = filesOnly.filter((filepath) => filepath !== undefined);
-
-  debug('result: ', result);
 
   return result;
 }

@@ -2,20 +2,20 @@ import { mkdir, writeFile } from 'fs/promises';
 import { scopeResolver } from '../scope-resolver.js';
 
 export const TEST_DIRS_TREE: string[] = [
-  'fisrt',
-  'fisrt/second',
-  'fisrt/second/third',
-  'fisrt/second/third/fourth',
+  'first',
+  'first/second',
+  'first/second/third',
+  'first/second/third/forth',
   'second',
   'second/third',
-  'second/third/fourth',
+  'second/third/forth',
 ];
 
 export const TEST_FILES_TREE: [string, string][] = [
-  'fisrt/file.txt',
-  'fisrt/second/file.txt',
+  'first/file.txt',
+  'first/second/file.txt',
   'second/third/file.txt',
-  'fisrt/second/third/fourth/file.txt',
+  'first/second/third/forth/file.txt',
 ].map((filepath) => {
   return [filepath, filepath];
 });

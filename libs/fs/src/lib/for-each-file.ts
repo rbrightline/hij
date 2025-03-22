@@ -1,8 +1,8 @@
 import type { Stats } from 'fs';
 import { stat } from 'fs/promises';
 import { debug as __debug } from 'debug';
-import { assertAbsolutePaths } from './assert/assert-absolute-paths.js';
 import type { FileHandler } from './types/file-handler.js';
+import { isAbsolutePathOrThrow } from './assert/is-absolute-path-or-throw.js';
 
 const debug = __debug('fs.forEachFile');
 
@@ -29,9 +29,7 @@ export async function forEachFile<R>(
   filePaths: string[],
   handler: FileHandler<R>
 ): Promise<R[]> {
-  assertAbsolutePaths(filePaths);
-
-  debug('filePaths', filePaths);
+  filePaths.forEach(isAbsolutePathOrThrow);
 
   const fileStatMapPromises = filePaths.map<
     Promise<[string, Stats] | undefined>
@@ -39,12 +37,10 @@ export async function forEachFile<R>(
     try {
       const stats = await stat(filepath);
       const result = [filepath, stats] as [string, Stats];
-      debug('Stat OK: ', result[0]);
       return result;
     } catch (error) {
-      debug(`Error checking stats of "${filepath}" path: `, error);
+      debug('Stat error: ', filepath, error);
     }
-    debug('Stat Error: ', filepath);
     return undefined;
   });
 
@@ -58,6 +54,5 @@ export async function forEachFile<R>(
 
   const result = await Promise.all(resultToResolve);
 
-  debug('forEachFile Result: ', result);
   return result;
 }
